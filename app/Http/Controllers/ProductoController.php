@@ -106,11 +106,6 @@ class ProductoController extends Controller
         
         $filter = explode('-',$descripcion)[1];
         
-        // if( $filter == ''){
-        //     $producto = Producto::all();  
-        // }else{
-        //     $producto = Producto::where('nombre','like','%'. $filter .'%')->get();            
-        // }
         $queryResult = DB::select('call sp_obtenerproductos("'.$filter.'")');
         $result = collect($queryResult);
         if( $result != null ){
@@ -127,5 +122,37 @@ class ProductoController extends Controller
             ]);
         }
       
-    }    
+    }   
+    
+    public function getProductosPaginado($descripcion, $page, $pagesize){
+        
+        $filter = explode('-',$descripcion)[1];
+        
+        $queryResult = DB::select('call sp_obtenerproductospaginado("'.$filter.'","'.$page*$pagesize.'","'.$pagesize.'")');
+        $result = collect($queryResult);
+        $totalCount = $this->getTotalCount($filter);
+        if( $result != null ){
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Producto por id encontrado',
+                'data' => ['total'=>$totalCount, 'items' => $result]
+            ]);
+        }else{
+            return response()->json([
+                'status_code' => 200,
+                'message' => 'Producto no encontrado',
+                'data' => ['total'=>$totalCount, 'items' => $result]
+            ]);
+        }
+      
+    }  
+
+    public function getTotalCount($filter){
+        
+        
+        $queryResult = DB::select('call sp_obtenerproductos("'.$filter.'")');
+        $result = collect($queryResult);
+        return $result->count();
+      
+    }  
 }

@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth:sanctum']],function(){
     Route::post('/producto/eliminar', [ProductoController::class,'EliminarProducto']);
     Route::get('/producto/id/{id}', [ProductoController::class,'getProducto']);
     Route::get('/producto/nombre/{descripcion}', [ProductoController::class,'getProductos']);
+    Route::get('/producto/nombre/{descripcion}/{page}/{pagesize}', [ProductoController::class,'getProductosPaginado']);
 
     //Sucursales
     Route::get('/sucursales', [SucursaleController::class,'getSucursales']);
